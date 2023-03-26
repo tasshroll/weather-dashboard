@@ -9,11 +9,26 @@
     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,400i,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
     <link rel="stylesheet" href="./assets/css/style.css" />
-    <title>Git it Done</title>
+    <title>Weather Dashboard</title>
 </head>
 
-<body>
-    <h2>Weather Dashboard</h2>
+<body class="flex-column min-100-vh">
+    <header class="hero">
+        <h1 class="app-title">Weather Dashboard</h1>
+    </header>
+<main class="flex-row justify-space-between">
+    <div class="col-12 col-md-4">
+        <div class="card">
+            <h3 class="card-header">Search for a City:</h3> 
+            <form class="card-body" id="city">
+                <input type="text" class="form-input" id="city" placeholder="City">
+                <button class="btn" >Search</button>
+            </form>
+
+        </div>
+    </div>
+</main>
+
     <p>City, Country, Lat, Long</p>
     <ul id="cities"></ul>
     <ul id="weather"></ul>

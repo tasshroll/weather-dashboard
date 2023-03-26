@@ -1,11 +1,17 @@
-var city = "Flagstaff";
+
+//personal OpenWeather API Key
 var apiKey = "3d8bc7dbc26cedc603210d72caafa151";
 var city = "Flagstaff";
 var stateCode = "AZ"
 var countryCode = "US"
-// get lat long of Flagstaff using Geocoding API
 var latitude = 0;
 var longitude = 0;
+
+// Query Selectors
+var citySearchEl = document.getElementById('#city');
+var btnCitySearchEl = document.querySelectorAll(btn);
+
+
 
 //Call Open Weather with a City and get the lat and long coordinates
 //http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
@@ -47,6 +53,7 @@ var getLatLong = function (lat, long) {
         });
 }
 
+// Call OpenWeather API  and pass in the lat long from first city
 var getWeatherApi = function (lat, long) {
     console.log("Inside getWeatherApi fetching weather for lat-long of ", lat, long);
     // insert lat long into API
@@ -80,4 +87,6 @@ var getWeatherApi = function (lat, long) {
 
 
 getLatLong(lat = latitude, long = longitude);
+
+b
 
