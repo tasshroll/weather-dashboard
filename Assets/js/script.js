@@ -85,13 +85,25 @@ var getWeatherApi = function (lat, long) {
                 console.log(response);
                 response.json().then(function (data) {
                     console.log(data);
-                    // Display the first cities temperature
+                    // Display the first city temperature
                     var outputTemp = '';
+                    var city = data.city.name;
                     let cityTemp = data.list[0].main.temp;
+                    let windSpeed = data.list[0].wind.speed;
+                    let humidity = data.list[0].main.humidity;
                     outputTemp += '<span>' + cityTemp + '</span>';
-                    console.log(outputTemp);
-                    var weatherEL = document.getElementById("weather");
-                    weatherEL.innerHTML = "Temperature for first city is " + outputTemp + " degrees Fahrenheit";
+                    console.log("Temperature is ", cityTemp);
+                    console.log("Windspeed is ", windSpeed);
+                    console.log("Humidity is ", humidity);
+
+                    var temperatureEL = document.getElementById("temperature");
+                    var windSpeedEL = document.getElementById("windspeed");
+                    var humidityEL = document.getElementById("humidity");
+
+                    temperatureEL.innerHTML = "Temperature for first city " + city + " is " + outputTemp + " degrees Fahrenheit";                    temperatureEL.innerHTML = "Temperature for first city " + city + " is " + outputTemp + " degrees Fahrenheit";
+                    windSpeedEL.innerHTML = "Windspeed is " + windSpeed + " mph";
+                    humidityEL.innerHTML = "Humidity is " + humidity;
+
                 });
             } else {
                 alert('Error: ' + response.statusText);
