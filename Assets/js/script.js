@@ -14,8 +14,6 @@ var btnCitySearchEl = document.querySelector('.btn');
 
 var formSubmitHandler = function (event) {
     event.preventDefault();
-
-    console.log("Form submitted");
     var cityToSearch = userCityEl.value.trim();
     console.log("City to search for is: ", cityToSearch);
     // Retreive latitude and longitude of User City
@@ -26,7 +24,6 @@ var formSubmitHandler = function (event) {
 //Call Open Weather with a City and get the lat and long coordinates
 //http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
 var getLatLong = function (city) {
-    console.log("In getLatLong");
     var geoCodeUrl = 'http://api.openweathermap.org/geo/1.0/direct?q=' + city + '&limit=5' + '&appid=' + apiKey;
     //+ city + stateCode + '&limit=5' + 'apiKey';
     http://api.openweathermap.org/geo/1.0/direct?q=London&limit=5&appid={API key}
@@ -38,7 +35,7 @@ var getLatLong = function (city) {
                 response.json().then(function (data) {
                     console.log(data);
                     var output = '';
-                    //display the city's lat and long
+                    //display the five city's found in Open Weather on the console
                     for (let i = 0; i < data.length; i++) {
                         lat = data[i].lat;
                         long = data[i].lon;
@@ -48,12 +45,18 @@ var getLatLong = function (city) {
                         let state = data[i].state;
                         let country=data[i].country;
                         // output += '<li>' + data[i].name + ', ' + data[i].country + ' Lat  ' + lat + ' Long ' + long + '</li>';
-                        output += '<li>' + name + ', ' + state + ', ' + country + ' Lat  ' + shLat + ' Long ' + shLong + '</li>';
+                        // output += '<li>' + name + ', ' + state + ', ' + country + ' Lat  ' + shLat + ' Long ' + shLong + '</li>';
+                        console.log(name + ', ' + state + ', ' + country + ' Lat  ' + shLat + ' Long ' + shLong );
                     }
-                    var cityLatLonEl = document.getElementById('cities');
-                    cityLatLonEl.innerHTML = output;
-                    console.log("cityLatLonEl is", cityLatLonEl);
+                    var currrentCityEl = document.getElementById('cities');
+                    console.log ("City to search forr is ", city);
+                    let state = data[0].state;
+                    let cityOutput = city + ", " + state;
+                    console.log (cityOutput);
+                    currrentCityEl.innerHTML = cityOutput;
+                    console.log("currrentCityEl is", currrentCityEl);
                     // Retreive weather for the first City in the returned list using lat and long
+                    
                     lat = data[0].lat;
                     long = data[0].lon;
                     getWeatherApi(lat, long);
@@ -91,7 +94,7 @@ var getWeatherApi = function (lat, long) {
                     let cityTemp = data.list[0].main.temp;
                     let windSpeed = data.list[0].wind.speed;
                     let humidity = data.list[0].main.humidity;
-                    outputTemp += '<span>' + cityTemp + '</span>';
+                    // outputTemp += '<span>' + cityTemp + '</span>';
                     console.log("Temperature is ", cityTemp);
                     console.log("Windspeed is ", windSpeed);
                     console.log("Humidity is ", humidity);
@@ -100,9 +103,9 @@ var getWeatherApi = function (lat, long) {
                     var windSpeedEL = document.getElementById("windspeed");
                     var humidityEL = document.getElementById("humidity");
 
-                    temperatureEL.innerHTML = "Temperature for first city " + city + " is " + outputTemp + " degrees Fahrenheit";                    temperatureEL.innerHTML = "Temperature for first city " + city + " is " + outputTemp + " degrees Fahrenheit";
-                    windSpeedEL.innerHTML = "Windspeed is " + windSpeed + " mph";
-                    humidityEL.innerHTML = "Humidity is " + humidity;
+                    temperatureEL.innerHTML = "Temperature: " + cityTemp + '\u00B0F';                    
+                    windSpeedEL.innerHTML = "Windspeed: " + windSpeed + " MPH";
+                    humidityEL.innerHTML = "Humidity: " + humidity + "%";
 
                 });
             } else {
