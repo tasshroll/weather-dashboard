@@ -1,21 +1,31 @@
 
 //personal OpenWeather API Key
 var apiKey = "3d8bc7dbc26cedc603210d72caafa151";
-var city = "Flagstaff";
-var stateCode = "AZ"
-var countryCode = "US"
+// var city = "Flagstaff";
+// var stateCode = "AZ"
+// var countryCode = "US"
 var latitude = 0;
 var longitude = 0;
 
 // Query Selectors
-var citySearchEl = document.getElementById('#city');
-var btnCitySearchEl = document.querySelectorAll(btn);
+var formUserEl = document.querySelector('#city');
+var userCityEl = document.querySelector('#user-city');
+var btnCitySearchEl = document.querySelector('.btn');
 
+var formSubmitHandler = function (event) {
+    event.preventDefault();
+
+    console.log("Form submitted");
+    var cityToSearch = userCityEl.value.trim();
+    console.log("City to search for is: ", cityToSearch);
+    // Retreive latitude and longitude of User City
+    getLatLong(cityToSearch);
+}
 
 
 //Call Open Weather with a City and get the lat and long coordinates
 //http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
-var getLatLong = function (lat, long) {
+var getLatLong = function (city) {
     console.log("In getLatLong");
     var geoCodeUrl = 'http://api.openweathermap.org/geo/1.0/direct?q=' + city + '&limit=5' + '&appid=' + apiKey;
     //+ city + stateCode + '&limit=5' + 'apiKey';
@@ -29,11 +39,16 @@ var getLatLong = function (lat, long) {
                     console.log(data);
                     var output = '';
                     //display the city's lat and long
-
                     for (let i = 0; i < data.length; i++) {
                         lat = data[i].lat;
                         long = data[i].lon;
-                        output += '<li>' + data[i].name + ', ' + data[i].country + ' Lat  ' + lat + ' Long ' + long + '</li>';
+                        let shLat = lat.toFixed(2);
+                        let shLong = long.toFixed(2);
+                        let name = data[i].name;
+                        let state = data[i].state;
+                        let country=data[i].country;
+                        // output += '<li>' + data[i].name + ', ' + data[i].country + ' Lat  ' + lat + ' Long ' + long + '</li>';
+                        output += '<li>' + name + ', ' + state + ', ' + country + ' Lat  ' + shLat + ' Long ' + shLong + '</li>';
                     }
                     var cityLatLonEl = document.getElementById('cities');
                     cityLatLonEl.innerHTML = output;
@@ -42,7 +57,6 @@ var getLatLong = function (lat, long) {
                     lat = data[0].lat;
                     long = data[0].lon;
                     getWeatherApi(lat, long);
-
                 });
             } else {
                 alert('Error: ' + response.statusText);
@@ -61,6 +75,8 @@ var getWeatherApi = function (lat, long) {
     var units = "imperial";
     var apiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat +
         '&lon=' + long + '&appid=' + apiKey + '&units=' + units;
+    // var apiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat='+{lat}+'&lon='+{long}+'&appid='+{apiKey}+'&units='+{units};
+   
     console.log("API URL is ", apiUrl)
 
     fetch(apiUrl)
@@ -70,11 +86,12 @@ var getWeatherApi = function (lat, long) {
                 response.json().then(function (data) {
                     console.log(data);
                     // Display the first cities temperature
-                    var output = '';
-                    output += '<span>' + data.list[0].main.temp + '</span>';
-                    console.log(output);
+                    var outputTemp = '';
+                    let cityTemp = data.list[0].main.temp;
+                    outputTemp += '<span>' + cityTemp + '</span>';
+                    console.log(outputTemp);
                     var weatherEL = document.getElementById("weather");
-                    weatherEL.innerHTML = "Temp for first city is " + output + " degrees Fahrenheit";
+                    weatherEL.innerHTML = "Temperature for first city is " + outputTemp + " degrees Fahrenheit";
                 });
             } else {
                 alert('Error: ' + response.statusText);
@@ -85,8 +102,6 @@ var getWeatherApi = function (lat, long) {
         });
 };
 
-
-getLatLong(lat = latitude, long = longitude);
-
-b
+// Get user input for a City
+formUserEl.addEventListener('submit', formSubmitHandler);
 
