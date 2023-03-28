@@ -76,13 +76,20 @@ var getWeatherApi = function (lat, long) {
     // insert lat long into API
     //api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
     var units = "imperial";
-    var apiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat +
-        '&lon=' + long + '&appid=' + apiKey + '&units=' + units;
+    var querySelectors = '&lat=' + lat +
+'&lon=' + long + '&appid=' + apiKey + '&units=' + units;
+    var currentWeatherApiUrl = 'https://api.openweathermap.org/data/2.5/weather?' + querySelectors;
+
+    //https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
+    var forecastApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?' + querySelectors;
+    // var forecastApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat +
+    //     '&lon=' + long + '&appid=' + apiKey + '&units=' + units;
     // var apiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat='+{lat}+'&lon='+{long}+'&appid='+{apiKey}+'&units='+{units};
    
-    console.log("API URL is ", apiUrl)
+    console.log("Current Weather API URL is ", currentWeatherApiUrl)
+    console.log("Forecast API URL is ", forecastApiUrl)
 
-    fetch(apiUrl)
+    fetch(forecastApiUrl)
         .then(function (response) {
             if (response.ok) {
                 console.log(response);
@@ -94,7 +101,9 @@ var getWeatherApi = function (lat, long) {
                     let cityTemp = data.list[0].main.temp;
                     let windSpeed = data.list[0].wind.speed;
                     let humidity = data.list[0].main.humidity;
+                    let date = data.list[0];
                     // outputTemp += '<span>' + cityTemp + '</span>';
+                    console.log ("Date is ", date);
                     console.log("Temperature is ", cityTemp);
                     console.log("Windspeed is ", windSpeed);
                     console.log("Humidity is ", humidity);
@@ -106,7 +115,16 @@ var getWeatherApi = function (lat, long) {
                     temperatureEL.innerHTML = "Temperature: " + cityTemp + '\u00B0F';                    
                     windSpeedEL.innerHTML = "Windspeed: " + windSpeed + " MPH";
                     humidityEL.innerHTML = "Humidity: " + humidity + "%";
+                    // Get the 5 day forecast
+                    for (let i=0; i<data.list.length; i+=8) {
+                        // the forecast data is for every 24 hours in 3 hour increments
+                        // grab the first data point out of the 8
+        
+                        let forecastTemp = data.list[i].main.temp_max;
+                        let date = data.list[i].dt_txt;
 
+                        console.log ("Future forecasted high temp for ", date," is ", forecastTemp);
+                    }
                 });
             } else {
                 alert('Error: ' + response.statusText);
