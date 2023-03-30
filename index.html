@@ -10,37 +10,105 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
     <link rel="stylesheet" href="./assets/css/style.css" />
     <title>Weather Dashboard</title>
-    <script
-    src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
-    integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U="
-    crossorigin="anonymous"
-  ></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
+        integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
 </head>
 
 <body class="flex-column min-100-vh">
     <header class="hero">
         <h1 class="app-title">Weather Dashboard</h1>
     </header>
-<main class="flex-row justify-space-between">
-    <div class="col-12 col-md-4">
-        <div class="card">
-            <h3 class="card-header">Search for a City:</h3> 
-            <form class="card-body" id="city">
-                <input id="user-city" type="text" class="form-input"  placeholder="Enter a City">
-                <button type ="submit" class="btn" >Search</button>
-            </form>
+    <main class="flex-row">
+        <!-- Left Column for Search & Prev Btns -->
+        <section class="flex-column min-100-vh">
 
-        </div>
-    </div>
-    <div class="col-12 col-md-8">
-        <h2 class="subtitle" id="cities">Showing Weather for: </h2>
-        <h3 id="icon"></h3>
-        <div id="temperature">Temp: </div>
-        <div id="windspeed">Wind: </div>
-        <div id="humidity">Humidity: </div>
+            <div class="col-12 col-md-5">
+                <div>
+                    <h3 class="card-header">Search for a City:</h3>
+                    <form class="card-body" id="city">
+                        <input id="user-city" type="text" class="form-input" placeholder="Enter a City">
+                        <button type="submit" class="btn">Search</button>
+                    </form>
+                </div>
+            </div>
+        </section>
 
-      </div>
-</main>
+        <!-- Right Column - Curr City & 5 day Forecast -->
+        <section class="flex-column col-md-9">
+            <div class="col-12 col-md-1">
+                <section class="card card-body">
+                    <h2 class="subtitle" id="cities">Showing Weather for: </h2>
+                    <h6 id="icon"></h6>
+                    <div id="temperature">Temp: </div>
+                    <div id="windspeed">Wind: </div>
+                    <div id="humidity">Humidity: </div>
+                </section>
+            </div>
+            
+
+            <section class="flex-row justify-space-around">
+                
+                <div class="col-12 col-md-2">
+                    <!--<div class="col-12 col-md-2" style="padding:0;"> -->
+                    <div class="card card-body" >
+                        <h3 class="subtitle" id="f1">City 1 Forecast</h3>
+                        <div id="f-date1">Date: </div>
+                        <div id="f-icon1"></div>
+                        <div id="f-temp1">Temp: </div>
+                        <div id="f-wind1">Wind: </div>
+                        <div id="f-humid1">Humidity: </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-12 col-md-2">
+                    <div class="card card-body">
+                        <h3 class="subtitle" id="f1">City 2 Forecast</h3>
+                        <div id="f-date2">Date: </div>
+                        <div id="f-icon2"> </div>
+                        <div id="f-temp2">Temp: </div>
+                        <div id="f-wind2">Wind: </div>
+                        <div id="f-humid2">Humidity: </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-2">
+                    <div class="card card-body">
+                        <h3 class="subtitle" id="f1">City 3 Forecast</h3>
+                        <div id="f-date3">Date: </div>
+                        <div id="f-icon3"> </div>
+                        <div id="f-temp3">Temp: </div>
+                        <div id="f-wind3">Wind: </div>
+                        <div id="f-humid3">Humidity: </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-2">
+                    <div class="card card-body">
+                        <h3 class="subtitle" id="f1">City 4 Forecast</h3>
+                        <div id="f-date4">Date: </div>
+                        <div id="f-icon4"> </div> 
+                        <div id="f-temp4">Temp: </div>
+                        <div id="f-wind4">Wind: </div>
+                        <div id="f-humid4">Humidity: </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-2">
+                    <div class="card card-body">
+                        <h3 class="subtitle" id="f1">City 5 Forecast</h3>
+                        <div id="f-date5">Date: </div>
+                        <div id="f-icon5"> </div> 
+                        <div id="f-temp5">Temp: </div> 
+                        <div id="f-wind5">Wind: </div>
+                        <div id="f-humid5">Humidity: </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+
 
     <!-- <p>City, Country, Lat, Long</p>
     <ul id="cities"></ul>
@@ -50,7 +118,7 @@
 
 
     <script src="./assets/js/script.js"></script>
-    
+
 </body>
 
 </html>

@@ -49,8 +49,8 @@ h6 {
 
   /* CARDS */
 .card {
-    margin: 0 0 20px 0;
-    /* border: 3px solid var(--dark-blue); */
+    margin: 20px 0px 20px 0px;
+    border: 3px solid var(--dark-blue);
     border-radius: var(--border-radius);
   }
   
@@ -109,7 +109,7 @@ h6 {
   }
   
   .min-100-vw {
-    min-width: 100vw;
+    min-width: 100vw
   }
   
   /* FONT UTILS */
