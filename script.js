@@ -43,8 +43,8 @@ const cityHistory = [
 function printForecastWeather() {
     console.log("City History Array is ", cityHistory);
     // Output forecast
+    // createForecastCards();
     for (var i = 0; i < 5; i++) {
-
         //TODO
         // If time add dynamic creation of this HTML for the 5 cards
         //<div class="col-12 col-md-2">
@@ -58,9 +58,60 @@ function printForecastWeather() {
         //         </div>
         //     </div>
         // </div>
+        var cardEl = document.querySelector('#fiveDaysForecast');
+        // create main container - it is appended last
+        var card = document.createElement("div");
+        card.setAttribute("class", "col-12 col-md-2");
 
+        // create card body
+        var cardBody = document.createElement("div");
+        cardBody.setAttribute("class", "card1 card-body");
+        // create date element & append
+        var dateElement = document.createElement("div");
+        dateElement.setAttribute("class", "f-subtitle");
+        dateElement.setAttribute("id", "f-date" + i);
+        cardBody.appendChild(dateElement);
+        // create icon element & append
+        var iconElement = document.createElement("div");
+        iconElement.setAttribute("id", "f-icon" + i);
+        cardBody.appendChild(iconElement);
+
+        //Create sub-data DIV for temp, wind, humidity & append
+        var subDataEl = document.createElement("div");
+        subDataEl.setAttribute("class", "sub-data");
+        cardBody.appendChild(subDataEl);
+
+        // Create  temp element and add it to the sub-data container
+        var tempElement = document.createElement("div");
+        tempElement.setAttribute("id", "f-temp" + i);
+        tempElement.textContent = "Temp: ";
+        subDataEl.appendChild(tempElement);
+
+        // Create the wind element and add it to the sub-data container
+        var windElement = document.createElement("div");
+        windElement.setAttribute("id", "f-wind" + i);
+        windElement.textContent = "Wind: ";
+        subDataEl.appendChild(windElement);
+
+        // Create the humidity element and add it to the sub-data container
+        var humidElement = document.createElement("div");
+        humidElement.setAttribute("id", "f-humid" + i);
+        humidElement.textContent = "Humidity: ";
+        subDataEl.appendChild(humidElement);
+
+        // Add the card body to the card container
+        card.appendChild(cardBody);
+    }; // ENDING of FOR loop
+
+
+
+    // write output to 5 cards
+    for (var i = 0; i < 5; i++) {
         // Add Date
-        var dateEl = document.getElementById(`f-date${i}`);
+        // var dateEl = document.getElementById(`f-date${i}`);
+        var dateEl = document.querySelector("f-date" + i);
+        debugger;
+
         var date = cityHistory[0].forecast[i].date;
         var formatDate = dayjs(date).format('M/D/YYYY');
         dateEl.innerHTML = formatDate;
@@ -80,8 +131,7 @@ function printForecastWeather() {
         // Append the icon image element to the icon element
         iconEl.appendChild(iconImg);
 
-
-        // Pring out forecast Temp, wind, humidity
+        // Print  forecast Temp, wind, humidity
         var tempEl = document.getElementById(`f-temp${i}`);
         tempEl.innerHTML = "Temp: " + cityHistory[0].forecast[i].temp + '\u00B0F';
 
@@ -90,8 +140,7 @@ function printForecastWeather() {
 
         var humidityEl = document.getElementById(`f-humid${i}`);
         humidityEl.innerHTML = "Humidity: " + cityHistory[0].forecast[i].humidity + "%";
-        // } //END OF FOR LOOP
-    } //END OF FOR LOOP
+    }; //END OF FOR LOOP
 }//END OF PRINT RESULTS
 
 ////////////////////
@@ -135,7 +184,6 @@ function getLatLong(city) {
                         //     console.log(name + ', ' + state + ', ' + country + ' Lat  ' + shLat + ' Long ' + shLong);
                         // }
                         console.log("Data is ", data);
-debugger;
                         if (data.length === 0) {
                             return;
                         }
@@ -323,14 +371,12 @@ var formSubmitHandler = function (event) {
     // Retreive latitude and longitude of User City
     getLatLong(cityToSearch);
 }
-// Get user input for a City
+// Event listener to get user input for a City
 formUserEl.addEventListener('submit', formSubmitHandler);
 
-// Previous button selections
+// Event listener to get previous city selections
 var prevBtnCityEl = document.querySelector('.prev-cities')
 prevBtnCityEl.addEventListener('click', function (event) {
-
-
     event.preventDefault();
     console.log("PREV BUTTON CLICKED");
     // retreive city from button that was clicked. Use class for prev cities .grey-btn
