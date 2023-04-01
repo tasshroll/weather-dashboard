@@ -94,7 +94,6 @@ function extractWeather(currentCity, data) {
 function printResults() {
     console.log("City History Array is ", cityHistory);
     // Output forecast
-    // for (let i = 0; i < cityHistory.length - 1; i++) {
     for (var i = 0; i < 5; i++) {
 
         // create the html div here
@@ -109,33 +108,36 @@ function printResults() {
         // </div>
 
         // Add Date
-        var d1Date = document.getElementById(`f-date${i}`);
-        d1Date.innerHTML = cityHistory[0].forecast[i].date;
+        var dateEl = document.getElementById(`f-date${i}`);
+        var date = cityHistory[0].forecast[i].date;
+        var formatDate = dayjs(date).format('M/D/YYYY');
+        dateEl.innerHTML = formatDate;
 
         // Add icon to display
         let iconString = cityHistory[0].forecast[i].icon;
-        console.log("Forecast Icon String is", iconString);
-        console.log(typeof (iconString));
+        // console.log("Forecast Icon String is", iconString);
         let iconDisplay = "https://openweathermap.org/img/wn/" + iconString + "@2x.png"
-        console.log("Searching this png ", iconDisplay);
-        var iconElement = document.getElementById(`f-icon${i}`);
+        var iconEl = document.getElementById(`f-icon${i}`);
+        //If a prior icon exists, remove it
+        if (iconEl.hasChildNodes()){
+            iconEl.removeChild(iconEl.firstChild);
+        }
+        
         const iconImg = document.createElement("img");
         iconImg.setAttribute("src", iconDisplay);
         // Append the icon image element to the icon element
-        iconElement.appendChild(iconImg);
+        iconEl.appendChild(iconImg);
 
 
-        // Pring out forecast Temp
-        var d1temp = document.getElementById(`f-temp${i}`);
-        d1temp.innerHTML = "Temp: " + cityHistory[0].forecast[i].temp + '\u00B0F';
+        // Pring out forecast Temp, wind, humidity
+        var tempEl = document.getElementById(`f-temp${i}`);
+        tempEl.innerHTML = "Temp: " + cityHistory[0].forecast[i].temp + '\u00B0F';
 
-        // Print out forecast wind
-        var d1wind = document.getElementById(`f-wind${i}`);
-        d1wind.innerHTML = "Wind: " + cityHistory[0].forecast[i].wind + " MPH";
+        var windEl = document.getElementById(`f-wind${i}`);
+        windEl.innerHTML = "Wind: " + cityHistory[0].forecast[i].wind + " MPH";
 
-        // Print out forecast humidity
-        var d1humidity = document.getElementById(`f-humid${i}`);
-        d1humidity.innerHTML = "Humidity: " + cityHistory[0].forecast[i].humidity + "%";
+        var humidityEl = document.getElementById(`f-humid${i}`);
+        humidityEl.innerHTML = "Humidity: " + cityHistory[0].forecast[i].humidity + "%";
         // } //END OF FOR LOOP
     } //END OF FOR LOOP
 }//END OF PRINT RESULTS
@@ -230,8 +232,8 @@ function getWeatherApi(lat, long) {
 
 
 
-                    temperatureEL.innerHTML = "Temperature: " + cityTemp + '\u00B0F';
-                    windSpeedEL.innerHTML = "Windspeed: " + windSpeed + " MPH";
+                    temperatureEL.innerHTML = "Temp: " + cityTemp + '\u00B0F';
+                    windSpeedEL.innerHTML = "Wind: " + windSpeed + " MPH";
                     humidityEL.innerHTML = "Humidity: " + humidity + "%";
 
                 });
