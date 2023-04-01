@@ -38,60 +38,7 @@ const cityHistory = [
 // let cityHistory = [...weatherObject]; //arrray of weather objects
 // let cityHistory = [];
 
-
-
-
-
-////////////////////
-// extractWeather
-//
-function extractWeather(currentCity, data) {
-
-    //Log the first 5 city's found in Open Weather to console
-    for (let i = 0; i < data.length; i++) {
-        lat = data[i].lat;
-        long = data[i].lon;
-        let shLat = lat.toFixed(2);
-        let shLong = long.toFixed(2);
-        let name = data[i].name;
-        let state = data[i].state;
-        let country = data[i].country;
-        // console.log(name + ', ' + state + ', ' + country + ' Lat  ' + shLat + ' Long ' + shLong);
-    }
-
-    //Clear weather icon if it exists
-    var iconElement = document.getElementById("icon");
-    var iconImgEl = iconElement.querySelector("img");
-    if (iconElement.contains(iconImgEl)) {
-        iconElement.removeChild(iconImgEl); //remove child from the img element
-    }
-
-    // Store data into local array
-    cityHistory[0].city = currentCity;
-    cityHistory[0].state = data[0].state;
-    cityHistory[0].lat = data[0].lat;
-    cityHistory[0].long = data[0].lon;
-
-
-    //TODO: CHANGE SO OUTPUT IS UPDATED WITH cityHistory here once its working
-    // Print City, State and Date on Web Page
-    let today = dayjs();
-    let dateOutput = today.format('M/D/YYYY');
-    let state = data[0].state;
-    let cityOutput = currentCity + ", " + state;
-    var currrentCityEl = document.getElementById('cities');
-    currrentCityEl.innerHTML = cityOutput + " (" + dateOutput + ")";
-
-
-    // Get the rest of the data by calling getWeatherApi with first city in API response
-    lat = data[0].lat;
-    long = data[0].lon;
-    getWeatherApi(lat, long);
-
-} // END OF EXTRACT WEATHER
-
-
-function printResults() {
+function printForecastWeather() {
     console.log("City History Array is ", cityHistory);
     // Output forecast
     for (var i = 0; i < 5; i++) {
@@ -154,31 +101,48 @@ function getLatLong(city) {
 
     //  user selects new city, Check if city is already in local storage (city, data) from prev search
     // If local storage exits 
-    //       DisplayCity = data[]
+    //       update web with saved weather in local storage using CITY key
     // Else
-    //       call API to pull data because this is a new city
-    //        displayCitySubmit = API source
-    //        display all the following and store it in local storage  (city, values.  Ie.
-
+    //       call API for the new city
     var prevCity = JSON.parse(localStorage.getItem(city));
     if (prevCity != null) {
-        cityHistory = prevCity;
-        printResults;
-    } else { // entered City not in my stored history
+        cityHistory[0] = prevCity;
+        printCurrWeather();
+        printForecastWeather();
+    } else { // user input is a new City
 
-        // Call OpenWeather to find city's latitude/longitude
+        // Call OpenWeather, find city's latitude/longitude
         var geoCodeUrl = 'http://api.openweathermap.org/geo/1.0/direct?q=' + city + '&limit=5' + '&appid=' + apiKey;
         //+ city + stateCode + '&limit=5' + 'apiKey';
         http://api.openweathermap.org/geo/1.0/direct?q=London&limit=5&appid={API key}
-        console.log("GeoCodeURL is", geoCodeUrl);
+        // console.log("GeoCodeURL is", geoCodeUrl);
         fetch(geoCodeUrl)
             .then(function (response) {
                 if (response.ok) {
                     console.log(response);
                     response.json().then(function (data) {
+                        //Log first 5 city's returned from Open Weather
+                        // for (let i = 0; i < data.length; i++) {
+                        //     lat = data[i].lat;
+                        //     long = data[i].lon;
+                        //     let shLat = lat.toFixed(2);
+                        //     let shLong = long.toFixed(2);
+                        //     let name = data[i].name;
+                        //     let state = data[i].state;
+                        //     let country = data[i].country;
+                        //     console.log(name + ', ' + state + ', ' + country + ' Lat  ' + shLat + ' Long ' + shLong);
+                        // }
 
+                        // Store city, state, lat, long to local array
+                        cityHistory[0].city=city;
+                        cityHistory[0].state=data[0].state;
+                        let lat =cityHistory[0].lat = data[0].lat;
+                        let long = cityHistory[0].long = data[0].lon;
+
+                        // Get current weather with Lat Long above
+                        getWeatherApi(lat, long);
                         // Data received! Display current conditions
-                        extractWeather(city, data);
+                        // extractWeather(city, data);
                     });
                 } else {
                     alert('Error: ' + response.statusText);
@@ -190,70 +154,68 @@ function getLatLong(city) {
     } //END OF IF LOOP
 } // END OF getLatLong
 
+
+
+function printCurrWeather() {
+
+    // Display the current city & Date
+    let today = dayjs();
+    let dateOutput = today.format('M/D/YYYY');
+    let cityOutput = cityHistory[0].city + ", " + cityHistory[0].state;
+    var currrentCityEl = document.getElementById('cities');
+    currrentCityEl.innerHTML = cityOutput + " (" + dateOutput + ")";
+
+    // Display current temp, wind, humidity
+    var temperatureEL = document.getElementById("temperature");
+    var windSpeedEL = document.getElementById("windspeed");
+    var humidityEL = document.getElementById("humidity");
+
+    temperatureEL.innerHTML = "Temp: " + cityHistory[0].currTemp + '\u00B0F';
+    windSpeedEL.innerHTML = "Wind: " + cityHistory[0].currWind + " MPH";
+    humidityEL.innerHTML = "Humidity: " + cityHistory[0].currHumidity + "%";
+
+    //Display icon
+    var iconElement = document.getElementById("icon");
+
+    //Clear previous icon if it exists in HTML
+    var iconImgEl = iconElement.querySelector("img");
+    if (iconElement.contains(iconImgEl)) {
+        iconElement.removeChild(iconImgEl); //remove child from the img element
+    }
+    // get icon, append the image element to HTML
+    let icon = cityHistory[0].currIcon;
+    let iconDisplay = "https://openweathermap.org/img/wn/" + icon + "@2x.png"
+    console.log("Icon is ", iconDisplay);
+    const iconImg = document.createElement("img");
+    iconImg.setAttribute("src", iconDisplay);
+    iconElement.appendChild(iconImg);
+} // END printCurrWeather
+
+
 ////////////////////
 // getWeatherApi
 // called by getLatLong
-// Call OpenWeather API  and pass in the lat long from first city
+// Call OpenWeather API with lat long from first city
 function getWeatherApi(lat, long) {
-    // console.log("Inside getWeatherApi fetching weather for lat-long of ", lat, long);
-    // insert lat long into API
-    //api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
+
     var units = "imperial";
     var querySelectors = '&lat=' + lat + '&lon=' + long + '&appid=' + apiKey + '&units=' + units;
     var currWeatherApiUrl = 'https://api.openweathermap.org/data/2.5/weather?' + querySelectors;
 
-    //https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
-    var forecastApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?' + querySelectors;
-    // console.log("Current Weather API URL is ", currWeatherApiUrl);
-    // console.log("Forecast API URL is ", forecastApiUrl);
-
+    // Get current weather from API
+    //api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
     fetch(currWeatherApiUrl)
         .then(function (response) {
             if (response.ok) {
                 response.json().then(function (data) {
-
                     console.log("CURRENT WEATHER conditions for Current City is", data);
-                    // Display Icon by City and Date
-
-                    // Display the current temperature for city
-                    var outputTemp = '';
-                    var city = data.name;
-                    let cityTemp = data.main.temp;
-                    let windSpeed = data.wind.speed;
-                    let humidity = data.main.humidity;
-                    let date = data.dt_text;
-                    let icon = data.weather[0].icon;
-
-
-                    //local storage
+                    //store current temp, icon, wind, humidity to local array
                     cityHistory[0].currTemp = data.main.temp;
                     cityHistory[0].currIcon = data.weather[0].icon;
                     cityHistory[0].currWind = data.wind.speed;
                     cityHistory[0].currHumidity = data.main.humidity;
-                    console.log("cityHistory is ", cityHistory);
-
-                    // outputTemp += '<span>' + cityTemp + '</span>';
-                    // console.log("Date: ", date, "City: ", city, " curr temp: ", cityTemp, " curr wind : ", windspeed, " curr humidity:", humidity);
-
-                    //Query Selectors
-                    var temperatureEL = document.getElementById("temperature");
-                    var windSpeedEL = document.getElementById("windspeed");
-                    var humidityEL = document.getElementById("humidity");
-
-                    //Display icon
-                    let iconDisplay = "https://openweathermap.org/img/wn/" + icon + "@2x.png"
-                    console.log("Icon is ", iconDisplay);
-                    var iconElement = document.getElementById("icon");
-                    const iconImg = document.createElement("img");
-                    iconImg.setAttribute("src", iconDisplay);
-                    iconElement.appendChild(iconImg);
-
-                    temperatureEL.innerHTML = "Temp: " + cityTemp + '\u00B0F';
-                    windSpeedEL.innerHTML = "Wind: " + windSpeed + " MPH";
-                    humidityEL.innerHTML = "Humidity: " + humidity + "%";
-
-
-
+                    // console.log("cityHistory is ", cityHistory);
+                    printCurrWeather();
                 });
             } else {
                 alert('Error: ' + response.statusText);
@@ -264,7 +226,11 @@ function getWeatherApi(lat, long) {
         });
 
 
-
+    // Get forecast weather from API
+    //https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
+    var forecastApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?' + querySelectors;
+    // console.log("Current Weather API URL is ", currWeatherApiUrl);
+    // console.log("Forecast API URL is ", forecastApiUrl);
     fetch(forecastApiUrl)
         .then(function (response) {
             if (response.ok) {
@@ -311,12 +277,20 @@ function getWeatherApi(lat, long) {
                             cityHistory[0].forecast[4].wind = data.list[i].wind.speed;;
                             cityHistory[0].forecast[4].humidity = data.list[i].main.humidity;
                         }
-                        printResults();
-                        console.log ("City for local storage is", cityHistory.city);
-                        console.log ("CityHistory is :", cityHistory);
+                        printForecastWeather();
+
+                        console.log("City for local storage is", cityHistory.city);
+                        console.log("CityHistory is :", cityHistory);
                         // Save city data to local storage, create button
                         localStorage.setItem(cityHistory[0].city, JSON.stringify(cityHistory[0]));
 
+
+                        var prevCityEl = document.querySelector('.prev-cities');
+                        var button = document.createElement("button");
+                        button.setAttribute("class", "btn grey-btn");
+                        button.setAttribute("type", "submit");
+                        button.textContent = (cityHistory[0].city);
+                        prevCityEl.appendChild(button);
                     }
                 });
 

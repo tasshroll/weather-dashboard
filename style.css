@@ -1,6 +1,6 @@
 :root {
   --primary: white;
-  --secondary: #9caea9;
+  --secondary: #bec1c0;
   --tertiary: #788585;
   --light-blue: #4f74ed;
   --dark-blue: #040347;
@@ -120,6 +120,11 @@ font-size: 20px;
   background-color: var(--light-blue);
   box-shadow: 3px 3px var(--dark);
   transform: translate(-1px, -1px);
+}
+
+.grey-btn {
+background-color: var(--secondary);
+color: black;
 }
 
 /* HEIGHT / WIDTH UTILS */
