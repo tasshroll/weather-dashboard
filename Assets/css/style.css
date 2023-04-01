@@ -121,12 +121,13 @@ h6 {
   .flex-row {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-evenly;
   }
   
   .flex-column {
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
   }
   
   .justify-space-between {

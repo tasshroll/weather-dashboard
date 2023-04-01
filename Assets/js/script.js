@@ -36,7 +36,7 @@ const weatherObject = [
 ]
 
 let cityHistory = [...weatherObject]; //arrray of weather objects
-
+// let cityHistory = [];
 
 
 
@@ -95,10 +95,21 @@ function printResults() {
     console.log("City History Array is ", cityHistory);
     // Output forecast
     // for (let i = 0; i < cityHistory.length - 1; i++) {
-    for (var i = 0; i <= 4; i++) {
+    for (var i = 0; i < 5; i++) {
+
+        // create the html div here
+        // <div class="col-12 col-md-2">
+        //     <div class="card card-body">
+        //         <div id="f-date3">Date: </div>
+        //         <div id="f-icon3"> </div> 
+        //         <div id="f-temp3">Temp: </div>
+        //         <div id="f-wind3">Wind: </div>
+        //         <div id="f-humid3">Humidity: </div>
+        //     </div>
+        // </div>
 
         // Add Date
-        var d1Date = document.getElementById('f-date1');
+        var d1Date = document.getElementById(`f-date${i}`);
         d1Date.innerHTML = cityHistory[0].forecast[i].date;
 
         // Add icon to display
@@ -107,7 +118,7 @@ function printResults() {
         console.log(typeof (iconString));
         let iconDisplay = "https://openweathermap.org/img/wn/" + iconString + "@2x.png"
         console.log("Searching this png ", iconDisplay);
-        var iconElement = document.getElementById("f-icon1");
+        var iconElement = document.getElementById(`f-icon${i}`);
         const iconImg = document.createElement("img");
         iconImg.setAttribute("src", iconDisplay);
         // Append the icon image element to the icon element
@@ -115,15 +126,15 @@ function printResults() {
 
 
         // Pring out forecast Temp
-        var d1temp = document.getElementById('f-temp1');
+        var d1temp = document.getElementById(`f-temp${i}`);
         d1temp.innerHTML = "Temp: " + cityHistory[0].forecast[i].temp + '\u00B0F';
 
         // Print out forecast wind
-        var d1wind = document.getElementById('f-wind1');
+        var d1wind = document.getElementById(`f-wind${i}`);
         d1wind.innerHTML = "Wind: " + cityHistory[0].forecast[i].wind + " MPH";
 
         // Print out forecast humidity
-        var d1humidity = document.getElementById('f-humid1');
+        var d1humidity = document.getElementById(`f-humid${i}`);
         d1humidity.innerHTML = "Humidity: " + cityHistory[0].forecast[i].humidity + "%";
         // } //END OF FOR LOOP
     } //END OF FOR LOOP
@@ -173,11 +184,7 @@ function getWeatherApi(lat, long) {
 
     //https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
     var forecastApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?' + querySelectors;
-    // var forecastApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat +
-    //     '&lon=' + long + '&appid=' + apiKey + '&units=' + units;
-    // var apiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat='+{lat}+'&lon='+{long}+'&appid='+{apiKey}+'&units='+{units};
-
-    // console.log("Current Weather API URL is ", currWeatherApiUrl);
+        // console.log("Current Weather API URL is ", currWeatherApiUrl);
     // console.log("Forecast API URL is ", forecastApiUrl);
 
     fetch(currWeatherApiUrl)
@@ -187,7 +194,6 @@ function getWeatherApi(lat, long) {
 
                     console.log("Current weather conditions for Current City is", data);
                     // Display Icon by City and Date
-
 
                     // Display the current temperature for city
                     var outputTemp = '';
@@ -205,7 +211,6 @@ function getWeatherApi(lat, long) {
                     cityHistory[0].currWind = data.wind.speed;
                     cityHistory[0].currHumidity = data.main.humidity;
                     console.log("cityHistory is ", cityHistory);
-
 
                     // outputTemp += '<span>' + cityTemp + '</span>';
                     // console.log("Date: ", date, "City: ", city, " curr temp: ", cityTemp, " curr wind : ", windspeed, " curr humidity:", humidity);
