@@ -14,8 +14,8 @@ var btnCitySearchEl = document.querySelector('.btn');
 
 
 
-// Weather Object
-const weatherObject = [
+// Weather Array
+const cityHistory = [
     {
         city: "",
         state: "",
@@ -35,7 +35,7 @@ const weatherObject = [
     }
 ]
 
-let cityHistory = [...weatherObject]; //arrray of weather objects
+// let cityHistory = [...weatherObject]; //arrray of weather objects
 // let cityHistory = [];
 
 
@@ -67,10 +67,10 @@ function extractWeather(currentCity, data) {
     }
 
     // Store data into local array
-    cityHistory.city = currentCity;
-    cityHistory.state = data[0].state;
-    cityHistory.lat = data[0].lat;
-    cityHistory.long = data[0].lon;
+    cityHistory[0].city = currentCity;
+    cityHistory[0].state = data[0].state;
+    cityHistory[0].lat = data[0].lat;
+    cityHistory[0].long = data[0].lon;
 
 
     //TODO: CHANGE SO OUTPUT IS UPDATED WITH cityHistory here once its working
@@ -96,14 +96,17 @@ function printResults() {
     // Output forecast
     for (var i = 0; i < 5; i++) {
 
-        // create the html div here
-        // <div class="col-12 col-md-2">
-        //     <div class="card card-body">
-        //         <div id="f-date3">Date: </div>
-        //         <div id="f-icon3"> </div> 
-        //         <div id="f-temp3">Temp: </div>
-        //         <div id="f-wind3">Wind: </div>
-        //         <div id="f-humid3">Humidity: </div>
+        //TODO
+        // If time add dynamic creation of this HTML for the 5 cards
+        //<div class="col-12 col-md-2">
+        //     <div class="card1 card-body">
+        //         <div class="f-subtitle" id="f-date0">Date: </div>
+        //         <div id="f-icon0"></div>
+        //         <div class="sub-data">
+        //             <div id="f-temp0">Temp: </div>
+        //             <div id="f-wind0">Wind: </div>
+        //             <div id="f-humid0">Humidity: </div>
+        //         </div>
         //     </div>
         // </div>
 
@@ -119,10 +122,10 @@ function printResults() {
         let iconDisplay = "https://openweathermap.org/img/wn/" + iconString + "@2x.png"
         var iconEl = document.getElementById(`f-icon${i}`);
         //If a prior icon exists, remove it
-        if (iconEl.hasChildNodes()){
+        if (iconEl.hasChildNodes()) {
             iconEl.removeChild(iconEl.firstChild);
         }
-        
+
         const iconImg = document.createElement("img");
         iconImg.setAttribute("src", iconDisplay);
         // Append the icon image element to the icon element
@@ -148,29 +151,44 @@ function printResults() {
 //Call Open Weather with a City and get the lat and long coordinates
 //http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
 function getLatLong(city) {
-    var geoCodeUrl = 'http://api.openweathermap.org/geo/1.0/direct?q=' + city + '&limit=5' + '&appid=' + apiKey;
-    //+ city + stateCode + '&limit=5' + 'apiKey';
-    http://api.openweathermap.org/geo/1.0/direct?q=London&limit=5&appid={API key}
-    console.log("GeoCodeURL is", geoCodeUrl);
-    fetch(geoCodeUrl)
-        .then(function (response) {
-            if (response.ok) {
-                console.log(response);
-                response.json().then(function (data) {
-                    console.log(data);
-                    var output = '';
 
-                    extractWeather(city, data);
+    //  user selects new city, Check if city is already in local storage (city, data) from prev search
+    // If local storage exits 
+    //       DisplayCity = data[]
+    // Else
+    //       call API to pull data because this is a new city
+    //        displayCitySubmit = API source
+    //        display all the following and store it in local storage  (city, values.  Ie.
 
-                });
-            } else {
-                alert('Error: ' + response.statusText);
-            }
-        })
-        .catch(function (error) {
-            alert('Unable to connect to OpenWeather');
-        });
-}
+    var prevCity = JSON.parse(localStorage.getItem(city));
+    if (prevCity != null) {
+        cityHistory = prevCity;
+        printResults;
+    } else { // entered City not in my stored history
+
+        // Call OpenWeather to find city's latitude/longitude
+        var geoCodeUrl = 'http://api.openweathermap.org/geo/1.0/direct?q=' + city + '&limit=5' + '&appid=' + apiKey;
+        //+ city + stateCode + '&limit=5' + 'apiKey';
+        http://api.openweathermap.org/geo/1.0/direct?q=London&limit=5&appid={API key}
+        console.log("GeoCodeURL is", geoCodeUrl);
+        fetch(geoCodeUrl)
+            .then(function (response) {
+                if (response.ok) {
+                    console.log(response);
+                    response.json().then(function (data) {
+
+                        // Data received! Display current conditions
+                        extractWeather(city, data);
+                    });
+                } else {
+                    alert('Error: ' + response.statusText);
+                }
+            })
+            .catch(function (error) {
+                alert('Unable to connect to OpenWeather');
+            });// end of FETCH
+    } //END OF IF LOOP
+} // END OF getLatLong
 
 ////////////////////
 // getWeatherApi
@@ -186,7 +204,7 @@ function getWeatherApi(lat, long) {
 
     //https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
     var forecastApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?' + querySelectors;
-        // console.log("Current Weather API URL is ", currWeatherApiUrl);
+    // console.log("Current Weather API URL is ", currWeatherApiUrl);
     // console.log("Forecast API URL is ", forecastApiUrl);
 
     fetch(currWeatherApiUrl)
@@ -194,7 +212,7 @@ function getWeatherApi(lat, long) {
             if (response.ok) {
                 response.json().then(function (data) {
 
-                    console.log("Current weather conditions for Current City is", data);
+                    console.log("CURRENT WEATHER conditions for Current City is", data);
                     // Display Icon by City and Date
 
                     // Display the current temperature for city
@@ -230,11 +248,11 @@ function getWeatherApi(lat, long) {
                     iconImg.setAttribute("src", iconDisplay);
                     iconElement.appendChild(iconImg);
 
-
-
                     temperatureEL.innerHTML = "Temp: " + cityTemp + '\u00B0F';
                     windSpeedEL.innerHTML = "Wind: " + windSpeed + " MPH";
                     humidityEL.innerHTML = "Humidity: " + humidity + "%";
+
+
 
                 });
             } else {
@@ -294,6 +312,11 @@ function getWeatherApi(lat, long) {
                             cityHistory[0].forecast[4].humidity = data.list[i].main.humidity;
                         }
                         printResults();
+                        console.log ("City for local storage is", cityHistory.city);
+                        console.log ("CityHistory is :", cityHistory);
+                        // Save city data to local storage, create button
+                        localStorage.setItem(cityHistory[0].city, JSON.stringify(cityHistory[0]));
+
                     }
                 });
 
