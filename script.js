@@ -8,9 +8,11 @@ var latitude = 0;
 var longitude = 0;
 
 // Query Selectors
+
 var formUserEl = document.querySelector('#city');
 var userCityEl = document.querySelector('#user-city');
 var btnCitySearchEl = document.querySelector('.btn');
+// var prevBtnCityEl = document.querySelector('.prev-cities')
 
 
 
@@ -132,11 +134,19 @@ function getLatLong(city) {
                         //     let country = data[i].country;
                         //     console.log(name + ', ' + state + ', ' + country + ' Lat  ' + shLat + ' Long ' + shLong);
                         // }
-
+                        console.log("Data is ", data);
+debugger;
+                        if (data.length === 0) {
+                            return;
+                        }
                         // Store city, state, lat, long to local array
-                        cityHistory[0].city=city;
-                        cityHistory[0].state=data[0].state;
-                        let lat =cityHistory[0].lat = data[0].lat;
+                        cityHistory[0].city = city;
+                        if (data[0].state) {
+                            cityHistory[0].state = data[0].state;
+                        } else {
+                            cityHistory[0].state = "";
+                        }
+                        let lat = cityHistory[0].lat = data[0].lat;
                         let long = cityHistory[0].long = data[0].lon;
 
                         // Get current weather with Lat Long above
@@ -279,12 +289,11 @@ function getWeatherApi(lat, long) {
                         }
                         printForecastWeather();
 
-                        console.log("City for local storage is", cityHistory.city);
                         console.log("CityHistory is :", cityHistory);
-                        // Save city data to local storage, create button
+                        // Save city data to local storage, use KEY = city name
                         localStorage.setItem(cityHistory[0].city, JSON.stringify(cityHistory[0]));
 
-
+                        // Create a button for CITY
                         var prevCityEl = document.querySelector('.prev-cities');
                         var button = document.createElement("button");
                         button.setAttribute("class", "btn grey-btn");
@@ -316,4 +325,23 @@ var formSubmitHandler = function (event) {
 }
 // Get user input for a City
 formUserEl.addEventListener('submit', formSubmitHandler);
+
+// Previous button selections
+var prevBtnCityEl = document.querySelector('.prev-cities')
+prevBtnCityEl.addEventListener('click', function (event) {
+
+
+    event.preventDefault();
+    console.log("PREV BUTTON CLICKED");
+    // retreive city from button that was clicked. Use class for prev cities .grey-btn
+    var cityChoice = event.target.closest('.grey-btn');
+    var cityToLookup = cityChoice.innerHTML;
+    console.log("User selected prior city: ", cityToLookup);
+    var prevCity = JSON.parse(localStorage.getItem(cityToLookup));
+    if (prevCity != null) {
+        cityHistory[0] = prevCity;
+        printCurrWeather();
+        printForecastWeather();
+    }
+});
 
