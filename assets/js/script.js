@@ -1,4 +1,3 @@
-
 //personal OpenWeather API Key
 var apiKey = "3d8bc7dbc26cedc603210d72caafa151";
 
@@ -10,8 +9,8 @@ var weatherContainerEl = document.querySelector('#weather');
 var forecastSubtitle = document.querySelector('#f1');
 var initialDisplay = true;
 
-// Weather Array
-const cityHistory = [
+// Weather object
+var cityData = 
     {
         city: "",
         state: "",
@@ -29,11 +28,10 @@ const cityHistory = [
             { date: "2023-03-30", icon: "", temp: 0, wind: 0, humidity: 0 },
         ],
     }
-]
 
 function createForecastHtml() {
     for (var i = 0; i < 5; i++) {
-        // If time add dynamic creation of this HTML for the 5 cards
+        // If time add dynamic creation of this HTML for the 5 cards in this format
         //<div class="col-12 col-md-2">
         //     <div class="card1 card-body">
         //         <div class="f-subtitle" id="f-date0">Date: </div>
@@ -94,71 +92,57 @@ function createForecastHtml() {
 
 
 function renderForecastWeather() {
-    console.log("City History Array is ", cityHistory);
-    // Output forecast
-    // createForecastCards();
-
-    // write output to 5 cards
+    // output forecast data to 5 cards
     for (var i = 0; i < 5; i++) {
+        
         // Add Date
         var dateEl = document.getElementById(`f-date${i}`);
-        // var dateEl = document.querySelector("#f-date" + i);
-
-        var date = cityHistory[0].forecast[i].date;
+        var date = cityData.forecast[i].date;
         var formatDate = dayjs(date).format('M/D/YYYY');
         dateEl.innerHTML = formatDate;
 
         // Add icon to display
-        let iconString = cityHistory[0].forecast[i].icon;
-        // console.log("Forecast Icon String is", iconString);
+        let iconString = cityData.forecast[i].icon;
         let iconDisplay = "https://openweathermap.org/img/wn/" + iconString + "@2x.png"
         var iconEl = document.getElementById(`f-icon${i}`);
         //If a prior icon exists, remove it
         if (iconEl.hasChildNodes()) {
             iconEl.removeChild(iconEl.firstChild);
         }
-
         const iconImg = document.createElement("img");
         iconImg.setAttribute("src", iconDisplay);
         // Append the icon image element to the icon element
         iconEl.appendChild(iconImg);
 
-        // Print  forecast Temp, wind, humidity
+        // Print forecast Temp, wind, humidity
         var tempEl = document.getElementById(`f-temp${i}`);
-        tempEl.innerHTML = "Temp: " + cityHistory[0].forecast[i].temp + '\u00B0F';
+        tempEl.innerHTML = "Temp: " + cityData.forecast[i].temp + '\u00B0F';
 
         var windEl = document.getElementById(`f-wind${i}`);
-        windEl.innerHTML = "Wind: " + cityHistory[0].forecast[i].wind + " MPH";
+        windEl.innerHTML = "Wind: " + cityData.forecast[i].wind + " MPH";
 
         var humidityEl = document.getElementById(`f-humid${i}`);
-        humidityEl.innerHTML = "Humidity: " + cityHistory[0].forecast[i].humidity + "%";
-    }; //END OF FOR LOOP
-}//END OF PRINT RESULTS
+        humidityEl.innerHTML = "Humidity: " + cityData.forecast[i].humidity + "%";
+    }; 
+}//END renderForecastWeather
 
-////////////////////
-// getLatLong
-//
+
+
 //Call Open Weather with a City and get the lat and long coordinates
 //http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
 function getLatLong(city) {
 
-    //  user selects new city, Check if city is already in local storage (city, data) from prev search
-    // If local storage exits 
-    //       update web with saved weather in local storage using CITY key
-    // Else
-    //       call API for the new city
     var prevCity = JSON.parse(localStorage.getItem(city));
     if (prevCity != null) {
-        cityHistory[0] = prevCity;
+        // local storage exists, update page with saved data
+        cityData = prevCity;
         renderCurrWeather();
         renderForecastWeather();
     } else { // user input is a new City
 
-        // Call OpenWeather, find city's latitude/longitude
+        // Call OpenWeather Direct geocoding, find city's latitude/longitude
         var geoCodeUrl = 'http://api.openweathermap.org/geo/1.0/direct?q=' + city + '&limit=5' + '&appid=' + apiKey;
-        //+ city + stateCode + '&limit=5' + 'apiKey';
-        http://api.openweathermap.org/geo/1.0/direct?q=London&limit=5&appid={API key}
-        // console.log("GeoCodeURL is", geoCodeUrl);
+
         fetch(geoCodeUrl)
             .then(function (response) {
                 if (response.ok) {
@@ -180,19 +164,17 @@ function getLatLong(city) {
                             return;
                         }
                         // Store city, state, lat, long to local array
-                        cityHistory[0].city = city;
+                        cityData.city = city;
                         if (data[0].state) {
-                            cityHistory[0].state = data[0].state;
+                            cityData.state = data[0].state;
                         } else {
-                            cityHistory[0].state = "";
+                            cityData.state = "";
                         }
-                        let lat = cityHistory[0].lat = data[0].lat;
-                        let long = cityHistory[0].long = data[0].lon;
+                        let lat = cityData.lat = data[0].lat;
+                        let long = cityData.long = data[0].lon;
 
                         // Get current weather with Lat Long above
                         getWeatherApi(lat, long);
-                        // Data received! Display current conditions
-                        // extractWeather(city, data);
                     });
                 } else {
                     alert('Error: ' + response.statusText);
@@ -209,9 +191,8 @@ function getLatLong(city) {
 function renderCurrWeather() {
 
     // Display the current city & Date
-    let today = dayjs();
-    let dateOutput = today.format('M/D/YYYY');
-    let cityOutput = cityHistory[0].city + ", " + cityHistory[0].state;
+    let dateOutput = dayjs().format('M/D/YYYY');
+    let cityOutput = cityData.city + ", " + cityData.state;
     var currrentCityEl = document.getElementById('cities');
     currrentCityEl.innerHTML = cityOutput + " (" + dateOutput + ")";
 
@@ -220,9 +201,9 @@ function renderCurrWeather() {
     var windSpeedEL = document.getElementById("windspeed");
     var humidityEL = document.getElementById("humidity");
 
-    temperatureEL.innerHTML = "Temp: " + cityHistory[0].currTemp + '\u00B0F';
-    windSpeedEL.innerHTML = "Wind: " + cityHistory[0].currWind + " MPH";
-    humidityEL.innerHTML = "Humidity: " + cityHistory[0].currHumidity + "%";
+    temperatureEL.innerHTML = "Temp: " + cityData.currTemp + '\u00B0F';
+    windSpeedEL.innerHTML = "Wind: " + cityData.currWind + " MPH";
+    humidityEL.innerHTML = "Humidity: " + cityData.currHumidity + "%";
 
     //Display icon
     var iconElement = document.getElementById("icon");
@@ -233,7 +214,7 @@ function renderCurrWeather() {
         iconElement.removeChild(iconImgEl); //remove child from the img element
     }
     // get icon, append the image element to HTML
-    let icon = cityHistory[0].currIcon;
+    let icon = cityData.currIcon;
     let iconDisplay = "https://openweathermap.org/img/wn/" + icon + "@2x.png"
     console.log("Icon is ", iconDisplay);
     const iconImg = document.createElement("img");
@@ -260,11 +241,11 @@ function getWeatherApi(lat, long) {
                 response.json().then(function (data) {
                     console.log("CURRENT WEATHER conditions for Current City is", data);
                     //store current temp, icon, wind, humidity to local array
-                    cityHistory[0].currTemp = data.main.temp;
-                    cityHistory[0].currIcon = data.weather[0].icon;
-                    cityHistory[0].currWind = data.wind.speed;
-                    cityHistory[0].currHumidity = data.main.humidity;
-                    // console.log("cityHistory is ", cityHistory);
+                    cityData.currTemp = data.main.temp;
+                    cityData.currIcon = data.weather[0].icon;
+                    cityData.currWind = data.wind.speed;
+                    cityData.currHumidity = data.main.humidity;
+                    // console.log("cityData is ", cityData);
                     renderCurrWeather();
                 });
             } else {
@@ -279,8 +260,7 @@ function getWeatherApi(lat, long) {
     // Get forecast weather from API
     //https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
     var forecastApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?' + querySelectors;
-    // console.log("Current Weather API URL is ", currWeatherApiUrl);
-    // console.log("Forecast API URL is ", forecastApiUrl);
+
     fetch(forecastApiUrl)
         .then(function (response) {
             if (response.ok) {
@@ -292,53 +272,54 @@ function getWeatherApi(lat, long) {
                         let forecastTemp = data.list[i].main.temp;
                         let date = data.list[i].dt_txt;
                         if (i = 3) {
-                            cityHistory[0].forecast[0].date = data.list[i].dt_txt;
-                            cityHistory[0].forecast[0].icon = data.list[i].weather[0].icon;
-                            cityHistory[0].forecast[0].temp = data.list[i].main.temp;
-                            cityHistory[0].forecast[0].wind = data.list[i].wind.speed;
-                            cityHistory[0].forecast[0].humidity = data.list[i].main.humidity;
+                            cityData.forecast[0].date = data.list[i].dt_txt;
+                            cityData.forecast[0].icon = data.list[i].weather[0].icon;
+                            cityData.forecast[0].temp = data.list[i].main.temp;
+                            cityData.forecast[0].wind = data.list[i].wind.speed;
+                            cityData.forecast[0].humidity = data.list[i].main.humidity;
 
                         }
                         if (i = 11) {
-                            cityHistory[0].forecast[1].date = data.list[i].dt_txt;
-                            cityHistory[0].forecast[1].icon = data.list[i].weather[0].icon;
-                            cityHistory[0].forecast[1].temp = data.list[i].main.temp;
-                            cityHistory[0].forecast[1].wind = data.list[i].wind.speed;;
-                            cityHistory[0].forecast[1].humidity = data.list[i].main.humidity;
+                            cityData.forecast[1].date = data.list[i].dt_txt;
+                            cityData.forecast[1].icon = data.list[i].weather[0].icon;
+                            cityData.forecast[1].temp = data.list[i].main.temp;
+                            cityData.forecast[1].wind = data.list[i].wind.speed;;
+                            cityData.forecast[1].humidity = data.list[i].main.humidity;
                         }
                         if (i = 19) {
-                            cityHistory[0].forecast[2].date = data.list[i].dt_txt;
-                            cityHistory[0].forecast[2].icon = data.list[i].weather[0].icon;
-                            cityHistory[0].forecast[2].temp = data.list[i].main.temp;
-                            cityHistory[0].forecast[2].wind = data.list[i].wind.speed;;
-                            cityHistory[0].forecast[2].humidity = data.list[i].main.humidity;
+                            cityData.forecast[2].date = data.list[i].dt_txt;
+                            cityData.forecast[2].icon = data.list[i].weather[0].icon;
+                            cityData.forecast[2].temp = data.list[i].main.temp;
+                            cityData.forecast[2].wind = data.list[i].wind.speed;;
+                            cityData.forecast[2].humidity = data.list[i].main.humidity;
                         }
                         if (i = 27) {
-                            cityHistory[0].forecast[3].date = data.list[i].dt_txt;
-                            cityHistory[0].forecast[3].icon = data.list[i].weather[0].icon;
-                            cityHistory[0].forecast[3].temp = data.list[i].main.temp;
-                            cityHistory[0].forecast[3].wind = data.list[i].wind.speed;;
-                            cityHistory[0].forecast[3].humidity = data.list[i].main.humidity;
+                            cityData.forecast[3].date = data.list[i].dt_txt;
+                            cityData.forecast[3].icon = data.list[i].weather[0].icon;
+                            cityData.forecast[3].temp = data.list[i].main.temp;
+                            cityData.forecast[3].wind = data.list[i].wind.speed;;
+                            cityData.forecast[3].humidity = data.list[i].main.humidity;
                         }
                         if (i = 35) {
-                            cityHistory[0].forecast[4].date = data.list[i].dt_txt;
-                            cityHistory[0].forecast[4].icon = data.list[i].weather[0].icon;
-                            cityHistory[0].forecast[4].temp = data.list[i].main.temp;
-                            cityHistory[0].forecast[4].wind = data.list[i].wind.speed;;
-                            cityHistory[0].forecast[4].humidity = data.list[i].main.humidity;
+                            cityData.forecast[4].date = data.list[i].dt_txt;
+                            cityData.forecast[4].icon = data.list[i].weather[0].icon;
+                            cityData.forecast[4].temp = data.list[i].main.temp;
+                            cityData.forecast[4].wind = data.list[i].wind.speed;;
+                            cityData.forecast[4].humidity = data.list[i].main.humidity;
                         }
+                        // output forecast weather
                         renderForecastWeather();
 
-                        console.log("CityHistory is :", cityHistory);
+                        // console.log("cityData is :", cityData);
                         // Save city data to local storage, use KEY = city name
-                        localStorage.setItem(cityHistory[0].city, JSON.stringify(cityHistory[0]));
+                        localStorage.setItem(cityData.city, JSON.stringify(cityData));
 
                         // Create a button for CITY
                         var prevCityEl = document.querySelector('.prev-cities');
                         var button = document.createElement("button");
                         button.setAttribute("class", "btn grey-btn");
                         button.setAttribute("type", "submit");
-                        button.textContent = (cityHistory[0].city);
+                        button.textContent = (cityData.city);
                         prevCityEl.appendChild(button);
                     }
                 });
@@ -365,7 +346,7 @@ prevBtnCityEl.addEventListener('click', function (event) {
     console.log("User selected prior city: ", cityToLookup);
     var prevCity = JSON.parse(localStorage.getItem(cityToLookup));
     if (prevCity != null) {
-        cityHistory[0] = prevCity;
+        cityData = prevCity;
         renderCurrWeather();
         renderForecastWeather();
     }
@@ -387,6 +368,10 @@ var formSubmitHandler = function (event) {
     // Retreive city name
     var cityToSearch = userCityEl.value.trim();
     console.log("City to search for is: ", cityToSearch);
+
+    //Clear form input
+    userCityEl.value = '';
+    
     // Get latitude and longitude for City
     getLatLong(cityToSearch);
 }

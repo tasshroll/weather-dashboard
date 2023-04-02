@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
         integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous">
         </script>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
     <title>Weather Dashboard</title>
 </head>
 
@@ -30,9 +30,7 @@
                         <button type="submit" class="btn">Search</button>
                     </form>
                     <div class="prev-cities">
-                        <!-- Previous User Cities go here-->
-                        <!-- <button type="submit" class="btn grey-btn" >Prev City</button>      -->
-
+                        <!-- Previous User Cities go here as buttons-->
                     </div>
                 </div>
 
@@ -53,15 +51,12 @@
                 </section>
             </div>
             <h3 class="f-subtitle hidden" id="f1">5 Day Forecast</h3>
-
-            <!-- 5 Cards dynamically created go in this section -->
-            <section class="flex-row justify-space-between" id="fiveDaysForecast">
-
-            </section>
+            <!-- 5 Forecast cards go in this section - dynamically created in javascript-->
+            <section class="flex-row justify-space-between" id="fiveDaysForecast"></section>
         </section>
     </main>
 
-    <script src="script.js"></script>
+    <script src="assets/js/script.js"></script>
 
 </body>
 

@@ -47,6 +47,14 @@ h6 {
   /* border-radius: var(--border-radius); */
 }
 
+#cities, #icon {
+display:inline-block;
+}
+
+#icon {
+margin-top: -40px;
+}
+
 .hidden {
 visibility: hidden;
 }
