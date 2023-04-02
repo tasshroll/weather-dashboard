@@ -12,11 +12,12 @@ https://github.com/tasshroll/weather-dashboard
 
 # Screenshot
 SCREENSHOTS of application
-![Screenshot of application page.](Assets/img/daily-planner.png)
+![Screenshot of application page.](Assets/images/weather-dashboard.png)
 
 VIDEO of usage
-![Video of application use](Assets/img/daily-planner-video.mp4)
+![[Video of application use](https://img.youtube.com/vi/eeQ1YPAlEs0/0.jpg)]
 
+(https://www.youtube.com/watch?v=eeQ1YPAlEs0)
 
 
 ## Description

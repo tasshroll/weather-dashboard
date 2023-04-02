@@ -19,7 +19,7 @@
         <h1 class="app-title">Weather Dashboard</h1>
     </header>
     <main class="flex-row">
-        <!-- Left Column for Search & Prev Btns -->
+        <!-- Left Column for Form and Buttons-->
         <section class="flex-column min-20-vw min-100-vh">
 
             <div class="col-12 col-md-5">
@@ -30,14 +30,14 @@
                         <button type="submit" class="btn">Search</button>
                     </form>
                     <div class="prev-cities">
-                        <!-- Previous User Cities go here as buttons-->
+                        <!-- Buttons are dynamically creataed here displaying name of the Previous User City-->
                     </div>
                 </div>
 
             </div>
         </section>
 
-        <!-- Right Column - Curr City & 5 day Forecast -->
+        <!-- Right Column for Weather & 5 day Forecast, initally hidden -->
         <section class="flex-column col-md-9">
             <div class="col-12 col-md-1">
                 <section class="card card-body hidden" id="weather">
@@ -51,8 +51,9 @@
                 </section>
             </div>
             <h3 class="f-subtitle hidden" id="f1">5 Day Forecast</h3>
-            <!-- 5 Forecast cards go in this section - dynamically created in javascript-->
-            <section class="flex-row justify-space-between" id="fiveDaysForecast"></section>
+            <section class="flex-row justify-space-between" id="fiveDaysForecast">
+                <!-- 5 Forecast cards are created in this section in javascript-->
+            </section>
         </section>
     </main>
 
