@@ -1,20 +1,14 @@
 
 //personal OpenWeather API Key
 var apiKey = "3d8bc7dbc26cedc603210d72caafa151";
-// var city = "Flagstaff";
-// var stateCode = "AZ"
-// var countryCode = "US"
-var latitude = 0;
-var longitude = 0;
 
 // Query Selectors
-
 var formUserEl = document.querySelector('#city');
 var userCityEl = document.querySelector('#user-city');
 var btnCitySearchEl = document.querySelector('.btn');
-// var prevBtnCityEl = document.querySelector('.prev-cities')
-
-
+var weatherContainerEl = document.querySelector('#weather');
+var forecastSubtitle = document.querySelector('#f1');
+var initialDisplay = true;
 
 // Weather Array
 const cityHistory = [
@@ -37,15 +31,8 @@ const cityHistory = [
     }
 ]
 
-// let cityHistory = [...weatherObject]; //arrray of weather objects
-// let cityHistory = [];
-
-function printForecastWeather() {
-    console.log("City History Array is ", cityHistory);
-    // Output forecast
-    // createForecastCards();
+function createForecastHtml() {
     for (var i = 0; i < 5; i++) {
-        //TODO
         // If time add dynamic creation of this HTML for the 5 cards
         //<div class="col-12 col-md-2">
         //     <div class="card1 card-body">
@@ -58,10 +45,11 @@ function printForecastWeather() {
         //         </div>
         //     </div>
         // </div>
-        var cardEl = document.querySelector('#fiveDaysForecast');
+
+        var htmlForecast = document.querySelector('#fiveDaysForecast');
         // create main container - it is appended last
-        var card = document.createElement("div");
-        card.setAttribute("class", "col-12 col-md-2");
+        var cardEl = document.createElement("div");
+        cardEl.setAttribute("class", "col-12 col-md-2");
 
         // create card body
         var cardBody = document.createElement("div");
@@ -100,17 +88,21 @@ function printForecastWeather() {
         subDataEl.appendChild(humidElement);
 
         // Add the card body to the card container
-        card.appendChild(cardBody);
+        htmlForecast.appendChild(cardBody);
     }; // ENDING of FOR loop
+}// End of createForecastHtml
 
 
+function renderForecastWeather() {
+    console.log("City History Array is ", cityHistory);
+    // Output forecast
+    // createForecastCards();
 
     // write output to 5 cards
     for (var i = 0; i < 5; i++) {
         // Add Date
-        // var dateEl = document.getElementById(`f-date${i}`);
-        var dateEl = document.querySelector("f-date" + i);
-        debugger;
+        var dateEl = document.getElementById(`f-date${i}`);
+        // var dateEl = document.querySelector("#f-date" + i);
 
         var date = cityHistory[0].forecast[i].date;
         var formatDate = dayjs(date).format('M/D/YYYY');
@@ -158,8 +150,8 @@ function getLatLong(city) {
     var prevCity = JSON.parse(localStorage.getItem(city));
     if (prevCity != null) {
         cityHistory[0] = prevCity;
-        printCurrWeather();
-        printForecastWeather();
+        renderCurrWeather();
+        renderForecastWeather();
     } else { // user input is a new City
 
         // Call OpenWeather, find city's latitude/longitude
@@ -214,7 +206,7 @@ function getLatLong(city) {
 
 
 
-function printCurrWeather() {
+function renderCurrWeather() {
 
     // Display the current city & Date
     let today = dayjs();
@@ -247,7 +239,7 @@ function printCurrWeather() {
     const iconImg = document.createElement("img");
     iconImg.setAttribute("src", iconDisplay);
     iconElement.appendChild(iconImg);
-} // END printCurrWeather
+} // END renderCurrWeather
 
 
 ////////////////////
@@ -273,7 +265,7 @@ function getWeatherApi(lat, long) {
                     cityHistory[0].currWind = data.wind.speed;
                     cityHistory[0].currHumidity = data.main.humidity;
                     // console.log("cityHistory is ", cityHistory);
-                    printCurrWeather();
+                    renderCurrWeather();
                 });
             } else {
                 alert('Error: ' + response.statusText);
@@ -335,7 +327,7 @@ function getWeatherApi(lat, long) {
                             cityHistory[0].forecast[4].wind = data.list[i].wind.speed;;
                             cityHistory[0].forecast[4].humidity = data.list[i].main.humidity;
                         }
-                        printForecastWeather();
+                        renderForecastWeather();
 
                         console.log("CityHistory is :", cityHistory);
                         // Save city data to local storage, use KEY = city name
@@ -358,23 +350,11 @@ function getWeatherApi(lat, long) {
         .catch(function (error) {
             alert('Unable to connect to OpenWeather');
         });
-
 } // END of getWeatherApi
 
 
 
-
-var formSubmitHandler = function (event) {
-    event.preventDefault();
-    var cityToSearch = userCityEl.value.trim();
-    console.log("City to search for is: ", cityToSearch);
-    // Retreive latitude and longitude of User City
-    getLatLong(cityToSearch);
-}
-// Event listener to get user input for a City
-formUserEl.addEventListener('submit', formSubmitHandler);
-
-// Event listener to get previous city selections
+// Event listener for previous city buttons, left column
 var prevBtnCityEl = document.querySelector('.prev-cities')
 prevBtnCityEl.addEventListener('click', function (event) {
     event.preventDefault();
@@ -386,8 +366,36 @@ prevBtnCityEl.addEventListener('click', function (event) {
     var prevCity = JSON.parse(localStorage.getItem(cityToLookup));
     if (prevCity != null) {
         cityHistory[0] = prevCity;
-        printCurrWeather();
-        printForecastWeather();
+        renderCurrWeather();
+        renderForecastWeather();
     }
 });
+
+
+
+// Handle form input
+var formSubmitHandler = function (event) {
+    event.preventDefault();
+    if (initialDisplay) {
+        // make weather output visible & create HTML on page
+        weatherContainerEl.setAttribute("class", "card card-body .visible");
+        forecastSubtitle.setAttribute("class", "f-subtitle .visible")
+        createForecastHtml();
+    };
+    initialDisplay = false;
+
+    // Retreive city name
+    var cityToSearch = userCityEl.value.trim();
+    console.log("City to search for is: ", cityToSearch);
+    // Get latitude and longitude for City
+    getLatLong(cityToSearch);
+}
+
+
+
+// Event listener to get user input for a City
+formUserEl.addEventListener('submit', formSubmitHandler);
+
+
+
 

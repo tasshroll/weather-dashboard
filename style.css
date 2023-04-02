@@ -46,6 +46,15 @@ h6 {
   text-align: right;
   /* border-radius: var(--border-radius); */
 }
+
+.hidden {
+visibility: hidden;
+}
+
+.visible {
+  visibility: visible;
+  }
+
 .f-subtitle {
   font-size: 1.75rem;
 }
@@ -84,6 +93,11 @@ font-size: 20px;
   padding: 2.5%;
 }
 
+img {
+overflow-x:auto;
+overflow-y: auto;
+overflow-clip-margin: content-box;
+}
 /* FORM */
 .form-label,
 .form-input,
