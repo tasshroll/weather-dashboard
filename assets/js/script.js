@@ -289,7 +289,7 @@ function getLatLong(city) {
     } else { // user input is a new City
 
         // Call OpenWeather Direct geocoding, find city's latitude/longitude
-        var geoCodeUrl = 'http://api.openweathermap.org/geo/1.0/direct?q=' + city + '&limit=5' + '&appid=' + apiKey;
+        var geoCodeUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=' + city + '&limit=5' + '&appid=' + apiKey;
 
         fetch(geoCodeUrl)
             .then(function (response) {
