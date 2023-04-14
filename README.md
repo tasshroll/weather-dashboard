@@ -67,9 +67,6 @@ Motivated to build an application that:
 - What did you learn?
 I learned about API calls and retreival of data. I made extensive use of dev tools to locate the data needed to display weather.
 
-## Installation 
-N/A
-
 ## Usage
 Enter a button in the form input and click "Search".
 If nothing is displayed, API data returned was empty for that city. Try again.
@@ -80,14 +77,3 @@ Ask BCS, tutor, prior CSS code from student activity
 ## License
 Please refer to the LICENSE in the repo.
 
-## Badges
-N/A
-
-## Features
-N/A
-
-## How to Contribute
-N/A
-
-## Tests
-N/A
