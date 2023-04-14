@@ -12,7 +12,7 @@ https://github.com/tasshroll/weather-dashboard
 
 # Screenshot
 SCREENSHOTS of application
-![Screenshot of application page.](Assets/images/weather-dashboard.png)
+![Screenshot of application page.](./assets/images/weather-dashboard.png)
 
 VIDEO of usage
 ![[Video of application use](https://img.youtube.com/vi/eeQ1YPAlEs0/0.jpg)]
